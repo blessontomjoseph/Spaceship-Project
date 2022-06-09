@@ -1,14 +1,13 @@
-
+import math
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.model_selection import cross_val_score
-from sklearn.metrics import
+from sklearn.metrics import accuracy_score
 
 
 def plotter(data,columns,fig_size):
     """function plots a bunch of columns of a data"""
-    
-    import math
     rows=math.ceil(len(columns)/4)
     i=0
     sns.set_style('darkgrid')
