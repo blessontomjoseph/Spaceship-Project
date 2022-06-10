@@ -46,3 +46,9 @@ class Learning_curve:
         plt.plot([i for i in range(len(l2))],l2)
         plt.ylim((0,0.3))
         plt.legend(['train','test'])
+
+
+        
+def data_info(data):
+    details={'info':dta.info(),'description':data.describe(),'null':data.isna().sum()}
+    return details
