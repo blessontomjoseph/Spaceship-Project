@@ -69,17 +69,24 @@ class Knn_imputation:
     knn=KNeighborsClassifier(n_neighbors=100)
     knn_r=KNeighborsRegressor(n_neighbors=100)
     
-    def __init__(self,training_data,transforming_data):
+    def __init__(self,training_data,transforming_data,rest_of_data):
         """instance takes input training and transforming data"""
         self.training_data=training_data
         self.transforming_data=transforming_data
+        self.rest_of_data=rest_of_data
+        
+    def trans_cols(self):
+        cat=[i for i in self.transforming_data.columns[self.transforming_data.isna().sum().gt(0)] if i in self.categorical]
+        num=[i for i in self.transforming_data.columns[self.transforming_data.isna().sum().gt(0)] if i in self.numerical]
+        return cat,num
 
-    def knn_impute_cat(self,cat_columns):
+    def knn_impute_cat(self):
         """columns must be categorical
             columns are the columns which has non zero nan values
            trasformable data are data you wanna impute using knn 
            but only has esxactly one nan value per row ,so that we 
            can train it efectively"""
+        cat_columns,_=self.trans_cols()
         for i in cat_columns:
             train_x=self.training_data.drop(i,axis=1)
             train_y=self.training_data[i]
@@ -92,14 +99,14 @@ class Knn_imputation:
         return self.transforming_data
 
 
-    def knn_impute_num(self,num_columns):
+    def knn_impute_num(self):
 
         """columns must be categorical
             columns are the columns which has non zero nan values
            trasformable data are data you wanna impute using knn 
            but only has esxactly one nan value per row ,so that we 
            can train it efectively"""
-
+        _,num_columns=self.trans_cols()
         for i in num_columns:
             train_x=self.training_data.drop(i,axis=1)
             train_y=self.training_data[i]
@@ -110,5 +117,67 @@ class Knn_imputation:
             ind=test_x.index
             self.transforming_data.loc[ind,i]=preds
         return self.transforming_data
-           
+    
+    def knn_implement(self):
+        """implementing knn imputation"""
+        cat,num=self.trans_cols()
+        data_transformable_im=self.knn_impute_cat(cat)
+        data_transformable_im=self.knn_impute_num(num)
+        result=pd.concat([self.training_data,data_transformable_im,self.rest_of_data]).sort_index(ascending=True)
+        return result    
+       
 
+
+
+def simple_im(train,test,val,categorical,numerical):
+    # we dont want to impute names
+    # but we'd impute the rest of the things based i=on median and equalent strategies
+    name_index=np.where(categorical=='name')[0][0]
+    cat_simpleim=np.delete(categorical,name_index)
+    im_c=SimpleImputer(strategy='most_frequent')
+    im_n=SimpleImputer(strategy='median')
+    
+    train[cat_simpleim]=im_c.fit_transform(train[cat_simpleim])
+    train[numerical]=im_n.fit_transform(train[numerical])
+   
+    val[cat_simpleim]=im_c.transform(val[cat_simpleim])
+    val[numerical]=im_n.transform(val[numerical])
+    
+    test['transported']=np.zeros([test.shape[0]])
+    test[cat_simpleim]=im_c.transform(test[cat_simpleim])
+    test[numerical]=im_n.transform(test[numerical])
+    test.drop('transported',axis=1,inplace=True)
+    return train,test,val
+    
+
+def name_splitter(data):
+    # name splitting to first and last name
+    data[['f_name','l_name']]=data.name.str.split(' ',expand=True)
+    data.drop('name',axis=1,inplace=True)
+    return data
+
+
+
+def name_impute(train_data,transform_data):
+    # imputing name now
+    for i in transform_data.homeplanet.unique():
+        mf_fname=train_data.loc[train_data.homeplanet==i].f_name.value_counts().index[0]
+        mf_lname=train_data[train_data.homeplanet==i].l_name.value_counts().index[0]
+
+        mask=transform_data.loc[(transform_data.homeplanet==i) & (transform_data.f_name.isna())].index
+        transform_data.loc[mask,'f_name']=mf_fname
+        mask=transform_data.loc[(transform_data.homeplanet==i) & (transform_data.l_name.isna())].index
+        transform_data.loc[mask,'l_name']=mf_lname
+    return transform_data
+
+
+def final_col_trans(train,test,val):
+    
+    cols_to_transform=['homeplanet','destination','deck','side']
+    encoder=ColumnTransformer([('o_encoding',OrdinalEncoder(),cols_to_transform)])
+    trans_pipe=Pipeline([('encoding',encoder)])
+
+    train[cols_to_transform]=trans_pipe.fit_transform(train[cols_to_transform])
+    val[cols_to_transform]=trans_pipe.transform(val[cols_to_transform])
+    test[cols_to_transform]=trans_pipe.transform(test[cols_to_transform])
+    return train,test,val
