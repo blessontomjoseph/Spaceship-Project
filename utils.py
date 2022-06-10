@@ -52,3 +52,16 @@ class Learning_curve:
 def data_info(data):
     details={'info':dta.info(),'description':data.describe(),'null':data.isna().sum()}
     return details
+
+
+def fetch_submission(predictions):
+    """function that outputs the submission file given input the raw predictions
+    output from a model"""
+    
+    test_original=pd.read_csv('../input/spaceship-titanic/test.csv')
+    test_original['Transported']=predictions.astype(bool)
+    submission=test_original[['PassengerId','Transported']]
+    submission.to_csv('submission.csv',index=False)
+    
+def plotmi(mi): 
+    sns.barplot(mi['mi_score'],mi.index);
