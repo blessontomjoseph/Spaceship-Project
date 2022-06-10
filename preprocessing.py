@@ -7,6 +7,9 @@ from sklearn.model_selection import cross_val_score,GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier,KNeighborsRegressor
 
 
+import pandas as pd
+import numpy as np
+
 def data_load(train_path,test_path):
     train=pd.read_csv(train_path)
     test=pd.read_csv(test_path)
@@ -64,16 +67,21 @@ def impute_split(data):
     return data_good,data_transformable,data_non_transformable
 
 
+
+
 class Knn_imputation:
     """defining knn classifier and regressor """
     knn=KNeighborsClassifier(n_neighbors=100)
     knn_r=KNeighborsRegressor(n_neighbors=100)
     
-    def __init__(self,training_data,transforming_data,rest_of_data):
+    def __init__(self,training_data,transforming_data,rest_of_data,categorical,numerical):
         """instance takes input training and transforming data"""
         self.training_data=training_data
         self.transforming_data=transforming_data
         self.rest_of_data=rest_of_data
+        self.categorical=categorical
+        self.numerical=numerical
+
         
     def trans_cols(self):
         cat=[i for i in self.transforming_data.columns[self.transforming_data.isna().sum().gt(0)] if i in self.categorical]
@@ -121,8 +129,8 @@ class Knn_imputation:
     def knn_implement(self):
         """implementing knn imputation"""
         cat,num=self.trans_cols()
-        data_transformable_im=self.knn_impute_cat(cat)
-        data_transformable_im=self.knn_impute_num(num)
+        data_transformable_im=self.knn_impute_cat()
+        data_transformable_im=self.knn_impute_num()
         result=pd.concat([self.training_data,data_transformable_im,self.rest_of_data]).sort_index(ascending=True)
         return result    
        
@@ -159,7 +167,7 @@ def name_splitter(data):
 
 
 def name_impute(train_data,transform_data):
-    # imputing name now
+    # imputing missing names by most frequent names 
     for i in transform_data.homeplanet.unique():
         mf_fname=train_data.loc[train_data.homeplanet==i].f_name.value_counts().index[0]
         mf_lname=train_data[train_data.homeplanet==i].l_name.value_counts().index[0]
