@@ -9,6 +9,8 @@ from sklearn.neighbors import KNeighborsClassifier,KNeighborsRegressor
 
 import pandas as pd
 import numpy as np
+import warnings
+warnings.simplefilter('ignore')
 
 def data_load(train_path,test_path):
     train=pd.read_csv(train_path)
@@ -23,7 +25,7 @@ def column_transformer1(data):
     data.columns=[i.lower() for i in data.columns]
     data[['deck','num','side']]=data['cabin'].str.split('/',expand=True)
     data['num'].astype(float)
-    data.drop('cabin',axis=1,inplace=True)
+    data.drop(['cabin','name'],axis=1,inplace=True)
     data[['group','passenger']]=data['passengerid'].str.split('_',expand=True).astype(int)
     data.drop('passengerid',axis=1,inplace=True)
     return data
@@ -38,7 +40,7 @@ def transformation(data):
         data[['cryosleep','vip',]]=data[['cryosleep','vip',]].astype(float)
         deck={'F':1, 'C':2, 'G':3, 'B':4, 'E':5, 'D':6, 'A':7, 'T':8}
         data.deck=data.deck.map(deck)
-        data.drop(['name','side','num'],1,inplace=True)
+        data.drop(['side','num'],1,inplace=True)
         try:
             # cuz we gonna use train data in this fn as well which doesnt have transported column
             data['transported']=data['transported'].astype(float)
@@ -140,19 +142,18 @@ class Knn_imputation:
 def simple_im(train,test,val,categorical,numerical):
     # we dont want to impute names
     # but we'd impute the rest of the things based i=on median and equalent strategies
-    name_index=np.where(categorical=='name')[0][0]
-    cat_simpleim=np.delete(categorical,name_index)
+
     im_c=SimpleImputer(strategy='most_frequent')
     im_n=SimpleImputer(strategy='median')
     
-    train[cat_simpleim]=im_c.fit_transform(train[cat_simpleim])
+    train[categorical]=im_c.fit_transform(train[categorical])
     train[numerical]=im_n.fit_transform(train[numerical])
    
-    val[cat_simpleim]=im_c.transform(val[cat_simpleim])
+    val[categorical]=im_c.transform(val[categorical])
     val[numerical]=im_n.transform(val[numerical])
     
     test['transported']=np.zeros([test.shape[0]])
-    test[cat_simpleim]=im_c.transform(test[cat_simpleim])
+    test[categorical]=im_c.transform(test[categorical])
     test[numerical]=im_n.transform(test[numerical])
     test.drop('transported',axis=1,inplace=True)
     return train,test,val
