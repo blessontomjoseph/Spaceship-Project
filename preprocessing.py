@@ -50,7 +50,7 @@ def transformation(data):
         
 
 def reverse_transformation(copy_original,current_data):
-    # lil' reverse transform  better for eda to make sense
+    # lil' reverse transform  better for eda to make sense (only if yr doing eda else ignore)
     current_data[['name','side','num']]=copy_original.loc[current_data.index,['name','side','num']]
     current_data['num']=current_data['num'].astype(float)
     planet={1:'Earth', 2:'Europa',3:'Mars'}
@@ -63,7 +63,7 @@ def reverse_transformation(copy_original,current_data):
 
   
 def impute_split(data):
-    data_good = data[data.isna().sum(axis=1).eq(0)] #this is used for trraining knn
+    data_good = data[data.isna().sum(axis=1).eq(0)] #this is used for training knn
     data_transformable = data[data.isna().sum(axis=1).eq(1)] #transformed wwith knn
     data_non_transformable = data[data.isna().sum(axis=1).gt(1)] #need fit_transform impute later
     return data_good,data_transformable,data_non_transformable

@@ -61,7 +61,6 @@ trainy=train['transported'].astype(int)
 valx=val.drop(['transported'],axis=1)
 valy=val['transported'].astype(int)
 
-print(trainx.isna().sum().sum())
-print(valx.isna().sum().sum())
-print(test.isna().sum().sum())
+
+
 
