@@ -1,4 +1,3 @@
-# temote_test_2
+# Spaceship Project
 
-# test.
-this is that difference that to be pulled and checked
+titanic spaceship project hosted by kaggle
