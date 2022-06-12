@@ -2,6 +2,8 @@ from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 from sklearn.feature_selection import mutual_info_classif
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
 
 
 
