@@ -40,9 +40,7 @@ val = train_imputer.knn_implement()
 test_imputer = Knn_imputation(
     test_good, test_transformable, test_non_transformable, categorical, numerical)
 test = train_imputer.knn_implement()
-train[['side', 'num']] = train_copy[['side', 'num']]
-val[['side', 'num']] = val_copy[['side', 'num']]
-test[['side', 'num']] = test_copy[['side', 'num']]
+
 
 train, test, val = simple_im(train, test, val, categorical, numerical)
 
@@ -51,14 +49,12 @@ trainy = train['transported'].astype(int)
 valx = val.drop(['transported'], axis=1)
 valy = val['transported'].astype(int)
 
+# train_score, val_score = results(trainx, trainy, valx, valy, model_rf)
+# print('train score:', train_score)
+# print('val score:', val_score)
 
-train_score, val_score = model_rf(trainx, trainy, valx, valy, model_rf)
-print('train score:', train_score)
-print('val score:', val_score)
 
-
-train_x, other = auto_best_features(
-    trainx, [valx, test], n_features=15, standardize_on_pca=True)
+train_x, other = auto_best_features(trainx, trainy,[valx, test], n_features=15, standardize_on_pca=True)
 valx, test = other[0], other[1]
 
 best_params = bayesian_search()
