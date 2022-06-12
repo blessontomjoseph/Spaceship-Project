@@ -5,7 +5,6 @@ from model import *
 from optimization import *
 
 
-
 train_path = '/kaggle/input/spaceship-titanic/train.csv'
 test_path = '/kaggle/input/spaceship-titanic/test.csv'
 train, test, val = data_load(train_path, test_path)
@@ -53,12 +52,15 @@ valx = val.drop(['transported'], axis=1)
 valy = val['transported'].astype(int)
 
 
-train_score, val_score = model_rf(trainx, trainy, valx, valy,model_rf)
+train_score, val_score = model_rf(trainx, trainy, valx, valy, model_rf)
 print('train score:', train_score)
 print('val score:', val_score)
 
 
-best_params=bayesian_search()
-model=model_rf['model'].set_params(best_params)
-train_score, val_score = model_rf(trainx, trainy, valx, valy,model)
+train_x, other = auto_best_features(
+    trainx, [valx, test], n_features=15, standardize_on_pca=True)
+valx, test = other[0], other[1]
 
+best_params = bayesian_search()
+model_rf['model'].set_params(best_params)
+train_score, val_score = model_rf(trainx, trainy, valx, valy, model)
