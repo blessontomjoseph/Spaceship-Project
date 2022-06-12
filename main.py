@@ -36,11 +36,10 @@ train_imputer = Knn_imputation(
 train = train_imputer.knn_implement()
 val_imputer = Knn_imputation(
     val_good, val_transformable, val_non_transformable, categorical, numerical)
-val = train_imputer.knn_implement()
+val = val_imputer.knn_implement()
 test_imputer = Knn_imputation(
     test_good, test_transformable, test_non_transformable, categorical, numerical)
-test = train_imputer.knn_implement()
-
+test = test_imputer.knn_implement()
 
 train, test, val = simple_im(train, test, val, categorical, numerical)
 
@@ -49,11 +48,10 @@ trainy = train['transported'].astype(int)
 valx = val.drop(['transported'], axis=1)
 valy = val['transported'].astype(int)
 
-
 train_score, val_score,test_preds = results(trainx, trainy, valx, valy,test, model_rf)
 print('train score:', train_score)
 print('val score:', val_score)
-fetch_submission(test_preds)
+# fetch_submission(test_preds)
 
 
 
@@ -61,9 +59,11 @@ fetch_submission(test_preds)
 # valx, test = other[0], other[1]
 
 
-# best_params = bayesian_search(trainx, trainy, valx, valy, model)
+best_params = bayesian_search(trainx, trainy, valx, valy, model)
 # model_rf['model'].set_params(best_params)
 # train_score, val_score = model_rf(trainx, trainy, valx, valy, model)
 # print('train score:', train_score)
 # print('val score:', val_score)
 
+
+print(best_params)
