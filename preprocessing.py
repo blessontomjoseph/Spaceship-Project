@@ -25,7 +25,7 @@ def column_transformer1(data):
     data.columns = [i.lower() for i in data.columns]
     data[['deck', 'num', 'side']] = data['cabin'].str.split('/', expand=True)
     data['num'].astype(float)
-    data.drop(['cabin', 'name'], axis=1, inplace=True)
+    data.drop(['cabin', 'name','num','side'], axis=1, inplace=True)
     data[['group', 'passenger']] = data['passengerid'].str.split(
         '_', expand=True).astype(int)
     data.drop('passengerid', axis=1, inplace=True)
@@ -41,7 +41,7 @@ def transformation(data):
     data[['cryosleep', 'vip', ]] = data[['cryosleep', 'vip', ]].astype(float)
     deck = {'F': 1, 'C': 2, 'G': 3, 'B': 4, 'E': 5, 'D': 6, 'A': 7, 'T': 8}
     data.deck = data.deck.map(deck)
-    data.drop(['side', 'num'], 1, inplace=True)
+    # data.drop(['side', 'num'], 1, inplace=True)
     try:
         # cuz we gonna use train data in this fn as well which doesnt have transported column
         data['transported'] = data['transported'].astype(float)

@@ -49,9 +49,15 @@ trainy = train['transported'].astype(int)
 valx = val.drop(['transported'], axis=1)
 valy = val['transported'].astype(int)
 
+<<<<<<< HEAD
 train_score, val_score,test_preds = results(trainx, trainy, valx, valy, model_rf)
 print('train score:', train_score)
 print('val score:', val_score)
+=======
+# train_score, val_score = results(trainx, trainy, valx, valy, model_rf)
+# print('train score:', train_score)
+# print('val score:', val_score)
+>>>>>>> b948df7abc3177a71d96e2521a754f2c76fd03b0
 
 prediction_test=
 
@@ -59,9 +65,14 @@ prediction_test=
 # train_x, other = auto_best_features(trainx, trainy,[valx, test], n_features=15, standardize_on_pca=True)
 # valx, test = other[0], other[1]
 
+<<<<<<< HEAD
 # best_params = bayesian_search(trainx, trainy, valx, valy, model)
 # model_rf['model'].set_params(best_params)
 # train_score, val_score = model_rf(trainx, trainy, valx, valy, model)
 # print('train score:', train_score)
 # print('val score:', val_score)
+=======
+train_x, other = auto_best_features(trainx, trainy,[valx, test], n_features=15, standardize_on_pca=True)
+valx, test = other[0], other[1]
+>>>>>>> b948df7abc3177a71d96e2521a754f2c76fd03b0
 
