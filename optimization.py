@@ -43,7 +43,7 @@ from sklearn.metrics import accuracy_score
 #         return best
 
 seed=5
-def objective(parameters,trainx,trainy,valx,val,valy):
+def objective(parameters,trainx,trainy,valx,valy):
     """objective function for """
     ne=int(parameters['n_estimators'])
     md=int(parameters['max_depth'])
@@ -58,20 +58,20 @@ def objective(parameters,trainx,trainy,valx,val,valy):
     acc=accuracy_score(preds,valy)
     return (1-acc)
 
-def optimizer(trial):
+def optimizer(trial,trainx,trainy,valx,valy):
     parameters={'n_estimators':hp.uniform('n_estimators',1,200),
                'max_depth':hp.uniform('max_depth',1,200),
                'min_samples_split':hp.uniform('min_samples_split',2,10),
                'min_samples_leaf':hp.uniform('min_samples_leaf',1,10)}
 #                'max_leaf_nodes':hp.uniform('max_leaf_nodes',),
 #                'max_features':hp.uniform('ma_features',)}
-    best=fmin(fn=objective,space=parameters,algo=tpe.suggest,trials=trial,max_evals=500,rstate=np.random.default_rng(5))
+    best=fmin(fn=objective(parameters,trainx,trainy,valx,valy),space=parameters,algo=tpe.suggest,trials=trial,max_evals=500,rstate=np.random.default_rng(5))
     return best
 
 
 def bayesian_search(trainx,trainy,valx,valy):
     trial=Trials()
-    best=optimizer(trial)
+    best=optimizer(trial,trainx,trainy,valx,valy)
     return best
 
 

@@ -59,11 +59,13 @@ print('val score:', val_score)
 # valx, test = other[0], other[1]
 
 
-best_params = bayesian_search(trainx, trainy, valx, valy, model)
+# best_params = bayesian_search(trainx, trainy, valx, valy)
 # model_rf['model'].set_params(best_params)
 # train_score, val_score = model_rf(trainx, trainy, valx, valy, model)
 # print('train score:', train_score)
 # print('val score:', val_score)
 
 
-print(best_params)
+# print(best_params)
+
+
