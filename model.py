@@ -20,3 +20,11 @@ def results(trainx,trainy,valx,valy,test,model):
 
 
 
+
+
+
+
+
+
+
+
