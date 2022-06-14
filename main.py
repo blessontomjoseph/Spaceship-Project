@@ -48,20 +48,19 @@ trainy = train['transported'].astype(int)
 valx = val.drop(['transported'], axis=1)
 valy = val['transported'].astype(int)
 
-best_params = bayesian_search(trainx,trainy,valx,valy)
-train_score, val_score,test_preds = model.results(trainx,trainy,valx,valy,test,best_params)
+best_params = bayesian_search(trainx, trainy, valx, valy)
+train_score, val_score, test_preds = model.results(
+    trainx, trainy, valx, valy, test, best_params)
 print('train score:', train_score)
 print('val score:', val_score)
 
-trainx, other = auto_best_features(trainx,trainy,[valx, test], n_features=15, standardize_on_pca=True)
+trainx, other = auto_best_features(
+    trainx, trainy, [valx, test], n_features=15, standardize_on_pca=True)
 valx, test = other[0], other[1]
 
-best_params = bayesian_search(trainx,trainy,valx,valy)
-train_score, val_score,test_preds = model.results(trainx,trainy,valx,valy,test,best_params)
+best_params = bayesian_search(trainx, trainy, valx, valy)
+train_score, val_score, test_preds = model.results(
+    trainx, trainy, valx, valy, test, best_params)
 print('train score:', train_score)
 print('val score:', val_score)
 fetch_submission(test_preds)
-
-
-
-

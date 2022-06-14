@@ -1,9 +1,9 @@
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler, OrdinalEncoder, OneHotEncoder
+from sklearn.preprocessing import  OrdinalEncoder
 from sklearn.pipeline import Pipeline
 from sklearn.compose import ColumnTransformer
-from sklearn.model_selection import cross_val_score, GridSearchCV
+from sklearn.model_selection import cross_val_score
 from sklearn.neighbors import KNeighborsClassifier, KNeighborsRegressor
 
 
@@ -25,7 +25,7 @@ def column_transformer1(data):
     data.columns = [i.lower() for i in data.columns]
     data[['deck', 'num', 'side']] = data['cabin'].str.split('/', expand=True)
     data['num'].astype(float)
-    data.drop(['cabin', 'name','num','side'], axis=1, inplace=True)
+    data.drop(['cabin', 'name', 'num', 'side'], axis=1, inplace=True)
     data[['group', 'passenger']] = data['passengerid'].str.split(
         '_', expand=True).astype(int)
     data.drop('passengerid', axis=1, inplace=True)
@@ -158,7 +158,3 @@ def final_col_trans(train, test, val):
     val[cols_to_transform] = trans_pipe.transform(val[cols_to_transform])
     test[cols_to_transform] = trans_pipe.transform(test[cols_to_transform])
     return train, test, val
-
-
-
-
