@@ -1,10 +1,8 @@
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.pipeline import Pipeline
 
 model=RandomForestClassifier()
 
