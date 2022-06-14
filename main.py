@@ -60,6 +60,8 @@ best_params = bayesian_search(trainx,trainy,valx,valy)
 train_score, val_score,test_preds = model.results(trainx,trainy,valx,valy,test,best_params)
 print('train score:', train_score)
 print('val score:', val_score)
-# fetch_submission(test_preds)
+fetch_submission(test_preds)
+
+
 
 
