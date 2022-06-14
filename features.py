@@ -21,7 +21,7 @@ def mutual_information(x,y,mask=None):
     return mi
 
 
-def pca_ing(x,standardize=None):
+def pca_ing(x,standardize=True):
     """function standardizes the data is not standardized and performs pca and outputs its componets in a df also loadings"""
     if standardize:
         sc=StandardScaler()
@@ -34,18 +34,20 @@ def pca_ing(x,standardize=None):
     loadings=pd.DataFrame(pca.components_.T,columns=components,index=x.columns)
     return x_pca,loadings
 
-def auto_best_features(x,y,other_data,n_features,standardize_on_pca=False):
+def auto_best_features(x,y,other_data,n_features,standardize_on_pca=True):
     """best features(having most mi scores) among x and its pca version """
     x_pca,_=pca_ing(x,standardize=standardize_on_pca)
+    x.reset_index(drop=True,inplace=True)
     all_features=x.join(x_pca)
     mutual_info=mutual_information(all_features,y)
-    selected_cols=mutual_info.index[:n_features]
+    selected_cols=mutual_info.index.values[:n_features]
     other_data_selected=[]
     for i in other_data:
-        x_pca,_=pca_ing(i,standardize=standardize_on_pca)
-        all_features=x.join(x_pca)
-        other_data_selected.append(all_features[selected_cols])
-    return x[selected_cols],other_data_selected            
+        i_pca,_=pca_ing(i,standardize=standardize_on_pca)
+        i.reset_index(drop=True,inplace=True)
+        i_all_features=i.join(i_pca)
+        other_data_selected.append(i_all_features[selected_cols])
+    return all_features[selected_cols],other_data_selected            
         
 
 
