@@ -6,8 +6,8 @@ from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.pipeline import Pipeline
 
-
-model_rf=RandomForestClassifier()
+from optimization import *
+model=RandomForestClassifier()
 
 # def results(trainx,trainy,valx,valy,test,model):
 #     """function that trains a model and validates it"""
