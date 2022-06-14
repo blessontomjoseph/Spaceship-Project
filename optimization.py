@@ -10,7 +10,7 @@ import model
 
 
 p_space={
-        'n_estimators':scope.int(hp.quniform('n_estimators',10,100,1)),
+        'n_estimators':scope.int(hp.uniform('n_estimators',10,100)),
         'max_depth':scope.int(hp.quniform('max_depth',1,10,1)),
         'min_samples_split':scope.int(hp.quniform('min_samples_split',2,10,1)),
         'min_samples_leaf':scope.int(hp.quniform('min_samples_leaf',1,10,1)),
