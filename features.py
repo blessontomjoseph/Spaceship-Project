@@ -33,7 +33,7 @@ def pca_ing(x, standardize=True):
     return x_pca, loadings
 
 
-def auto_best_features(x, y, other_data, n_features, standardize_on_pca=True):
+def auto_best_features(x, y,  n_features, standardize_on_pca=True,other_data=None):
     """best features(having most mi scores) among x and its pca version """
     x_pca, _ = pca_ing(x, standardize=standardize_on_pca)
     x.reset_index(drop=True, inplace=True)
@@ -41,11 +41,12 @@ def auto_best_features(x, y, other_data, n_features, standardize_on_pca=True):
     mutual_info = mutual_information(all_features, y)
     selected_cols = mutual_info.index.values[:n_features]
     other_data_selected = []
-    for i in other_data:
-        i_pca, _ = pca_ing(i, standardize=standardize_on_pca)
-        i.reset_index(drop=True, inplace=True)
-        i_all_features = i.join(i_pca)
-        other_data_selected.append(i_all_features[selected_cols])
+    if other_data is not None:
+        for i in other_data:
+            i_pca, _ = pca_ing(i, standardize=standardize_on_pca)
+            i.reset_index(drop=True, inplace=True)
+            i_all_features = i.join(i_pca)
+            other_data_selected.append(i_all_features[selected_cols])
     return all_features[selected_cols], other_data_selected
 
 
